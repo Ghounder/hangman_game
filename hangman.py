@@ -14,20 +14,25 @@ def random_choice(words):
     return random.choice(words)
 
 
-def screen(lives,word,hidden):
+def screen(lives,word,hidden,remaining_words):
     buffer = " "
     while lives >=0:
         print("                                                               Hangman Game\n\n")
         print("Lives : ",lives,"\n")
-        #print(word,"\n")
+        print(remaining_words)
+        print(word,"\n")
         print(buffer.join(hidden))
         letter = input("Ingrese una letra : ").lower()
         if check_if_exist(letter,word):
             hidden = update(word,letter,hidden)
+            remaining_words-=1
         else:
             lives-=1
+        if remaining_words <= 0:
+            os.system("cls")
+            win(word)
         os.system("cls")
-    lose()
+    lose(word)
 
 
 def update(word,letter,hidden):
@@ -37,11 +42,21 @@ def update(word,letter,hidden):
     return hidden
 
 
-def win():
-    pass
+def win(word):
+    buffer = ""
+    print(buffer.join(word))
+    print("YOU WIN")
+    print("Try again?\n\n1.Yes\n2.No")
+    ans = input("continue? : ")
+    if ans == 1:
+        run()
+    elif ans == 2:
+        return print("GAME OVER")
 
 
-def lose():
+def lose(word):
+    buffer = ""
+    print(buffer.join(word))
     print("Try again?\n\n1.Yes\n2.No")
     ans = input("continue? : ")
     if ans == 1:
@@ -61,8 +76,9 @@ def run ():
     word = random_choice(words).strip()
     table = word.maketrans("áéíóú","aeiou")
     word = list(word.translate(table))
+    remaining_words = len(list(set(word)))
     hidden = list(len(word)*"_")
-    screen(lives,word,hidden)
+    screen(lives,word,hidden,remaining_words)
 
 
 if __name__ == "__main__":
